@@ -18,6 +18,7 @@ bin/
 !**/src/test/**/bin/
 start_frontend.bat
 start_backend.bat
+# src/main/
 ### IntelliJ IDEA ###
 .idea
 *.iws

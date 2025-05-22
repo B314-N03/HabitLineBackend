@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.backend.hl.model.enums.PriorityEnum;
+import com.backend.hl.model.enums.TaskStatusEnum;
 import com.backend.hl.model.enums.TaskTypeEnum;
 
 @Entity
@@ -30,6 +31,8 @@ public class Task {
     private TaskTypeEnum taskType;
     @Enumerated(EnumType.STRING)
     private PriorityEnum priority;
+    @Enumerated(EnumType.STRING)
+    private TaskStatusEnum status;
 
     public Task() {}
 
@@ -123,5 +126,13 @@ public class Task {
     public void setPriority(PriorityEnum priority) {
         this.priority = priority;
     }    
+
+    public TaskStatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatusEnum status) {
+        this.status = status;
+    }
 
 }
