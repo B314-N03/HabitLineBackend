@@ -1,11 +1,13 @@
 package com.backend.hl.controller;
 
 import com.backend.hl.repository.TaskRepository;
+import com.backend.hl.model.Comment;
 import com.backend.hl.model.Task;
 import com.backend.hl.model.enums.TaskStatusEnum;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ public class TaskController {
 
     @GetMapping
     public List<Task> getTasks() {
-        return taskRepository.findAll();
+        return taskRepository.findAllWithComments();
     }
 
     @PostMapping("/create")
@@ -50,12 +52,23 @@ public class TaskController {
         if (task.getTaskType() != null) oldTask.setTaskType(task.getTaskType());
         if (task.getPriority() != null) oldTask.setPriority(task.getPriority());
         if (task.getCompleted() != null) oldTask.setCompleted(task.getCompleted());
+        
         if (task.getStatus() != null){
             oldTask.setStatus(task.getStatus());
             oldTask.setCompleted(task.getStatus() == TaskStatusEnum.done);
         };
         oldTask.setLastUpdatedAt(java.time.LocalDateTime.now());
         
+        if (task.getComments() != null) {
+        // Ensure bidirectional relationship is preserved
+        List<Comment> updatedComments = task.getComments().stream()
+            .peek(c -> c.setTask(oldTask))
+            .collect(Collectors.toList());
+
+        oldTask.getComments().clear(); // remove old comments
+        oldTask.getComments().addAll(updatedComments); // add updated/new comments
+    }
+
         return taskRepository.save(oldTask);
     }
 

@@ -2,6 +2,7 @@ package com.backend.hl.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.backend.hl.model.enums.PriorityEnum;
 import com.backend.hl.model.enums.TaskStatusEnum;
 import com.backend.hl.model.enums.TaskTypeEnum;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "tasks")
@@ -33,11 +35,25 @@ public class Task {
     private PriorityEnum priority;
     @Enumerated(EnumType.STRING)
     private TaskStatusEnum status;
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Comment> comments;
 
     public Task() {}
 
     // Parameterized constructor with custom values
-    public Task(String title, String description, LocalDateTime createdAt, LocalDateTime lastUpdatedAt, boolean completed, UUID userId, UUID projectId, TaskTypeEnum taskType, PriorityEnum priority) {
+    public Task(
+        String title,
+        String description,
+        LocalDateTime createdAt,
+        LocalDateTime lastUpdatedAt,
+        boolean completed,
+        UUID userId,
+        UUID projectId,
+        TaskTypeEnum taskType,
+        PriorityEnum priority,
+        List<Comment> comments
+        ) {
         this.title = title;
         this.description = description;
         this.completed = completed; 
@@ -45,6 +61,7 @@ public class Task {
         this.projectId = projectId;
         this.taskType = taskType;
         this.priority = priority;
+        this.comments = comments;
     }
 
     public UUID getId() {
@@ -135,4 +152,11 @@ public class Task {
         this.status = status;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }
