@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "projects")
 public class Project {
@@ -16,9 +18,9 @@ public class Project {
     private String title;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
-    @CreationTimestamp
-    @Column(name = "last_updated_at", updatable = false)
+    @Column(name = "last_updated_at")
     private LocalDateTime lastUpdatedAt;
     private Integer doneTasks;
     private Integer openTasks;

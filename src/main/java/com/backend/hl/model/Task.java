@@ -11,6 +11,7 @@ import com.backend.hl.model.enums.PriorityEnum;
 import com.backend.hl.model.enums.TaskStatusEnum;
 import com.backend.hl.model.enums.TaskTypeEnum;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "tasks")
@@ -22,9 +23,9 @@ public class Task {
     private String description;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
-    @CreationTimestamp
-    @Column(name = "last_updated_at", updatable = false)
+    @Column(name = "last_updated_at")
     private LocalDateTime lastUpdatedAt;
     private Boolean completed;
     private UUID userId;

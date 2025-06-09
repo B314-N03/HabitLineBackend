@@ -5,6 +5,7 @@ import com.backend.hl.model.Comment;
 import com.backend.hl.model.Task;
 import com.backend.hl.model.enums.TaskStatusEnum;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -57,7 +58,7 @@ public class TaskController {
             oldTask.setStatus(task.getStatus());
             oldTask.setCompleted(task.getStatus() == TaskStatusEnum.done);
         };
-        oldTask.setLastUpdatedAt(java.time.LocalDateTime.now());
+        oldTask.setLastUpdatedAt(LocalDateTime.now());
         
         if (task.getComments() != null) {
         // Ensure bidirectional relationship is preserved
