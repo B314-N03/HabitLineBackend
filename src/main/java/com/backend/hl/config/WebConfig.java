@@ -1,4 +1,4 @@
-package com.backend.hl; // use your package structure
+package com.backend.hl.config; 
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;

@@ -18,7 +18,7 @@ bin/
 !**/src/test/**/bin/
 start_frontend.bat
 start_backend.bat
-# src/main/
+.env
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -27,6 +27,8 @@ start_backend.bat
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+src/main/resources/application.properties
+
 
 ### NetBeans ###
 /nbproject/private/
