@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.backend.hl.model.enums.ThemeEnum;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -21,6 +22,11 @@ public class User {
     @Column(name = "created_at", updatable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime createdAt;
+    private String role = "USER"; // Default role
+    @Enumerated(EnumType.STRING)
+    @Column(name = "theme", nullable = false)
+    private ThemeEnum theme = ThemeEnum.light; // Default theme
+
 
     public User() {}
     public User(String username, String email, String password, LocalDateTime createdAt) {
@@ -68,5 +74,21 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public ThemeEnum getTheme() {
+        return theme;
+    }
+
+    public void setTheme(ThemeEnum theme) {
+        this.theme = theme;
     }
 }
