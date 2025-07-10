@@ -2,10 +2,16 @@ package com.backend.hl.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.backend.hl.repository.UserRepository;
+
+import com.backend.hl.model.User;
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -15,7 +21,11 @@ public class JwtService {
 
     @Value("${jwt.secret}")
     private String jwtSecret;
+    
+    @Autowired
+    private UserRepository userRepository;
 
+    
     // Generate signing key from secret
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
@@ -56,5 +66,22 @@ public class JwtService {
                 .getBody()
                 .getExpiration();
         return expiration.before(new Date());
+    }
+
+
+    public String refreshToken(String token) {
+        if (!isTokenExpired(token)) return token;
+
+        String username = extractUsername(token);
+        User user = userRepository.findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        UserDetails userDetails = org.springframework.security.core.userdetails.User
+            .withUsername(user.getEmail())
+            .password("") 
+            .authorities(user.getRole()) 
+            .build();
+
+        return generateToken(userDetails);
     }
 }

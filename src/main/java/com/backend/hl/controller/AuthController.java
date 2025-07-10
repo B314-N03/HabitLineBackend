@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.hl.dto.AuthenticationRequest;
 import com.backend.hl.dto.AuthenticationResponse;
+import com.backend.hl.dto.RefreshTokenRequest;
 import com.backend.hl.dto.UserResponseFrontend;
 import com.backend.hl.model.User;
 import com.backend.hl.repository.UserRepository;
@@ -95,6 +96,16 @@ public class AuthController {
             user.getRole()
         );
         return ResponseEntity.ok(userResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        String token = refreshTokenRequest.getToken();
+        if( token == null || token.isEmpty()) {
+            return ResponseEntity.badRequest().body(new AuthenticationResponse("Invalid token"));
+        }
+        String refreshedToken = jwtService.refreshToken(token);
+        return ResponseEntity.ok(new AuthenticationResponse(refreshedToken));
     }
 
 }

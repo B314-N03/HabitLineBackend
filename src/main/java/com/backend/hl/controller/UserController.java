@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
 import com.backend.hl.repository.UserRepository;
 import com.backend.hl.model.User;
+import com.backend.hl.dto.UserResponseFrontend;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,30 +20,37 @@ public class UserController {
     private UserRepository userRepository;
 
     @GetMapping
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserResponseFrontend> getUsers() {
+        return userRepository.findAll().stream()
+            .map(user -> new UserResponseFrontend(user.getId(), user.getUsername(), user.getEmail(), user.getRole()))
+            .toList();
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@RequestBody String id) {
-        return userRepository.findById(UUID.fromString(id)).orElse(null);
+    public UserResponseFrontend getUserById(@PathVariable("id") UUID id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) return null;
+        return new UserResponseFrontend(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
     }
 
     @PostMapping("/create")
-    public User createUser(@RequestBody User user) {
+    public UserResponseFrontend createUser(@RequestBody User user) {
         if (user.getCreatedAt() == null) {
-        user.setCreatedAt(java.time.LocalDateTime.now());
-    }
-        return userRepository.save(user);
+            user.setCreatedAt(java.time.LocalDateTime.now());
+        }
+        User savedUser = userRepository.save(user);
+        return new UserResponseFrontend(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), savedUser.getRole());
     }
 
     @PostMapping("/update")
-    public User updateUser(@RequestBody User user) {
+    public UserResponseFrontend updateUser(@RequestBody User user) {
         UUID userId = user.getId();
-        User oldUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        User oldUser = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
         if(user.getUsername() != null) oldUser.setUsername(user.getUsername());
         if(user.getEmail() != null) oldUser.setEmail(user.getEmail());
-        if(user.getPassword() != null) oldUser.setPassword(user.getPassword());
-        return userRepository.save(user);
+        // Do NOT update password here
+        User updatedUser = userRepository.save(oldUser);
+        return new UserResponseFrontend(updatedUser.getId(), updatedUser.getUsername(), updatedUser.getEmail(), updatedUser.getRole());
     }
 }
