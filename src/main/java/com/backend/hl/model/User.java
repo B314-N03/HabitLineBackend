@@ -1,4 +1,5 @@
 package com.backend.hl.model;
+
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -27,13 +28,28 @@ public class User {
     @Column(name = "theme", nullable = false)
     private ThemeEnum theme = ThemeEnum.light; // Default theme
 
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "region", column = @Column(name = "weather_region")),
+            @AttributeOverride(name = "lat", column = @Column(name = "weather_lat")),
+            @AttributeOverride(name = "lon", column = @Column(name = "weather_lon"))
+    })
+    private Weather weather;
 
-    public User() {}
-    public User(String username, String email, String password, LocalDateTime createdAt) {
+    public User() {
+    }
+
+    public User(
+            String username,
+            String email,
+            String password,
+            LocalDateTime createdAt,
+            Weather weather) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;
+        this.weather = weather;
     }
 
     public UUID getId() {
@@ -90,5 +106,13 @@ public class User {
 
     public void setTheme(ThemeEnum theme) {
         this.theme = theme;
+    }
+
+    public Weather getWeather() {
+        return weather;
+    }
+
+    public void setWeather(Weather weather) {
+        this.weather = weather;
     }
 }

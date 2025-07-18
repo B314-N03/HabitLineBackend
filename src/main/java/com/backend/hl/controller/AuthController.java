@@ -30,18 +30,21 @@ import com.backend.hl.security.JwtService;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired private AuthenticationManager authManager;
-    @Autowired private UserRepository userRepository;
-    @Autowired private JwtService jwtService;
-    @Autowired private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authManager;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             Map<String, String> errorResponse = Map.of(
-                "type", "error",
-                "message", "user with this email already exists"
-            );
+                    "type", "error",
+                    "message", "user with this email already exists");
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
@@ -62,8 +65,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody AuthenticationRequest request) {
         Authentication auth = authManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         String token = jwtService.generateToken((UserDetails) auth.getPrincipal());
 
@@ -71,12 +73,7 @@ public class AuthController {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        UserResponseFrontend userResponse = new UserResponseFrontend(
-            user.getId(),
-            user.getUsername(),
-            user.getEmail(),
-            user.getRole()
-        );
+        UserResponseFrontend userResponse = UserResponseFrontend.createUserResponseFrontend(user);
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
         response.put("user", userResponse);
@@ -89,19 +86,14 @@ public class AuthController {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        UserResponseFrontend userResponse = new UserResponseFrontend(
-            user.getId(),
-            user.getUsername(),
-            user.getEmail(),
-            user.getRole()
-        );
+        UserResponseFrontend userResponse = UserResponseFrontend.createUserResponseFrontend(user);
         return ResponseEntity.ok(userResponse);
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthenticationResponse> refresh(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         String token = refreshTokenRequest.getToken();
-        if( token == null || token.isEmpty()) {
+        if (token == null || token.isEmpty()) {
             return ResponseEntity.badRequest().body(new AuthenticationResponse("Invalid token"));
         }
         String refreshedToken = jwtService.refreshToken(token);
