@@ -12,33 +12,31 @@ public class UserResponseFrontend {
     private String email;
     private String role;
     private ThemeEnum theme;
-    private String region;
-    private String lat;
-    private String lon;
+    private WeatherDTO weather;
 
-    public UserResponseFrontend(UUID id, String username, String email, String role, String region, String lat,
-            String lon, ThemeEnum theme) {
+    public UserResponseFrontend(UUID id, String username, String email, String role,
+            ThemeEnum theme, WeatherDTO weather) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.role = role;
-        this.region = region;
-        this.lat = lat;
-        this.lon = lon;
         this.theme = theme;
+        this.weather = weather;
     }
 
     public static UserResponseFrontend createUserResponseFrontend(User user) {
         Weather weather = user.getWeather();
+        WeatherDTO weatherDTO = weather != null
+                ? new WeatherDTO(weather.getRegion(), weather.getLat(), weather.getLon())
+                : null;
+
         return new UserResponseFrontend(
                 user.getId(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getRole(),
-                weather != null ? weather.getRegion() : null,
-                weather != null ? weather.getLat() : null,
-                weather != null ? weather.getLon() : null,
-                user.getTheme());
+                user.getTheme(),
+                weatherDTO);
     }
 
     public UUID getId() {
@@ -57,19 +55,11 @@ public class UserResponseFrontend {
         return role;
     }
 
-    public String getRegion() {
-        return region;
-    }
-
     public ThemeEnum getTheme() {
         return theme;
     }
 
-    public String getLat() {
-        return lat;
-    }
-
-    public String getLon() {
-        return lon;
+    public WeatherDTO getWeather() {
+        return weather;
     }
 }
