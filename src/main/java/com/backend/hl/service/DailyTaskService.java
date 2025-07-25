@@ -2,9 +2,12 @@ package com.backend.hl.service;
 
 import com.backend.hl.model.DailyTask;
 import com.backend.hl.repository.DailyTaskRepository;
+
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -51,5 +54,21 @@ public class DailyTaskService {
             throw new RuntimeException("Task not found");
         }
         dailyTaskRepository.deleteById(id);
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void resetDailyTasks() {
+        List<DailyTask> dailyTasks = dailyTaskRepository.findAll();
+        for (DailyTask task : dailyTasks) {
+            if (task.getCompleted()) {
+                // Track the date sfor analytics
+                // You can create a separate entity for analytics and save it to the database
+                // For simplicity, I'm just logging the date here
+                System.out.println("Task completed on " + LocalDate.now());
+            }
+
+            task.setCompleted(false);
+            dailyTaskRepository.save(task);
+        }
     }
 }
