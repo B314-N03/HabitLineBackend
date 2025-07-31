@@ -33,7 +33,7 @@ public class TaskService {
 
     public Task updateTask(Task task) {
         UUID taskId = task.getId();
-        Task oldTask = taskRepository.findById(taskId)
+        Task oldTask = taskRepository.findByIdWithComments(taskId)
                 .orElseThrow(() -> new RuntimeException("Task not found with id: " + taskId));
 
         // Update only non-null fields
