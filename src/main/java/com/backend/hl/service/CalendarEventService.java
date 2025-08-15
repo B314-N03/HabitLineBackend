@@ -59,7 +59,10 @@ public class CalendarEventService {
             existingEvent.setLocation(event.getLocation());
         }
         if (event.getCalendar() != null) {
-            existingEvent.setCalendar(event.getCalendar());
+            UUID calendarId = event.getCalendar().getId();
+            CalendarType calendar = calendarTypeRepository.findById(calendarId)
+                .orElseThrow(() -> new RuntimeException("Calendar not found"));
+            existingEvent.setCalendar(calendar);
         }
         if (event.getPeople() != null) {
             existingEvent.setPeople(event.getPeople());

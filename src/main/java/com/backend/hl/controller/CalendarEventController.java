@@ -23,30 +23,6 @@ public class CalendarEventController {
     @Autowired
     private CalendarEventService calendarEventService;
 
-    @GetMapping("/types")
-    public CalendarType[] getCalendarTypes() {
-        return calendarEventService.getCalendarTypes(null);
-    }
-
-    @GetMapping("/types/create")
-    public CalendarType createCalendarType(CalendarType calendarType) {
-        return calendarEventService.createCalendarType(calendarType);
-    }
-
-    @GetMapping("/types/{id}")
-    public CalendarType getCalendarTypeById(@PathVariable("id") UUID id) {
-        return calendarEventService.getCalendarTypeById(id);
-    }
-
-    @PostMapping("/types/update")
-    public CalendarType updateCalendarType(@RequestBody CalendarType calendarType) {
-        return calendarEventService.updateCalendarType(calendarType);
-    }
-
-    @DeleteMapping("/types/delete/{id}")
-    public void deleteCalendarType(@PathVariable("id") UUID id) {
-        calendarEventService.deleteCalendarType(id);
-    }
 
     @GetMapping
     public List<CalendarEvent> getAllEvents() {

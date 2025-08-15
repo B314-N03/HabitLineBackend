@@ -26,6 +26,7 @@ public class CalendarEvent {
     private String title;
     private String description;
     private String start;
+    @Column(name="end_time")
     private String end;
     private String location;
 
