@@ -71,41 +71,12 @@ public class CalendarEventService {
         return calendarEventRepository.save(existingEvent);
     }
 
-    public CalendarType[] getCalendarTypes(UUID userId) {
-        return calendarTypeRepository.findByUserId(userId).toArray(new CalendarType[0]);
-    }
 
-    public CalendarType getCalendarTypeById(UUID id) {
-        return calendarTypeRepository.findById(id).orElse(null);
-    }
 
     public CalendarEvent delete(UUID id) {
         CalendarEvent event = calendarEventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Calendar Event not found"));
         calendarEventRepository.delete(event);
         return event;
-    }
-
-    public CalendarType createCalendarType(CalendarType calendarType) {
-        return calendarTypeRepository.save(calendarType);
-    }
-
-    public void deleteCalendarType(UUID id) {
-        calendarTypeRepository.deleteById(id);
-    }
-
-    public CalendarType updateCalendarType(CalendarType calendarType) {
-        UUID id = calendarType.getId();
-        CalendarType existingType = calendarTypeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Calendar Type not found"));
-
-        if (calendarType.getName() != null) {
-            existingType.setName(calendarType.getName());
-        }
-        if (calendarType.getColorTheme() != null) {
-            existingType.setColorTheme(calendarType.getColorTheme());
-        }
-
-        return calendarTypeRepository.save(existingType);
     }
 }
