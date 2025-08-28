@@ -14,7 +14,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
     private String username;
     private String email;

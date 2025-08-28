@@ -1,4 +1,5 @@
 package com.backend.hl.model;
+
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Table(name = "tasks")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
     private String title;
     private String description;
@@ -40,24 +42,24 @@ public class Task {
     @JsonManagedReference
     private List<Comment> comments;
 
-    public Task() {}
+    public Task() {
+    }
 
     // Parameterized constructor with custom values
     public Task(
-        String title,
-        String description,
-        LocalDateTime createdAt,
-        LocalDateTime lastUpdatedAt,
-        boolean completed,
-        UUID userId,
-        UUID projectId,
-        TaskTypeEnum taskType,
-        PriorityEnum priority,
-        List<Comment> comments
-        ) {
+            String title,
+            String description,
+            LocalDateTime createdAt,
+            LocalDateTime lastUpdatedAt,
+            boolean completed,
+            UUID userId,
+            UUID projectId,
+            TaskTypeEnum taskType,
+            PriorityEnum priority,
+            List<Comment> comments) {
         this.title = title;
         this.description = description;
-        this.completed = completed; 
+        this.completed = completed;
         this.userId = userId;
         this.projectId = projectId;
         this.taskType = taskType;
@@ -143,7 +145,7 @@ public class Task {
 
     public void setPriority(PriorityEnum priority) {
         this.priority = priority;
-    }    
+    }
 
     public TaskStatusEnum getStatus() {
         return status;

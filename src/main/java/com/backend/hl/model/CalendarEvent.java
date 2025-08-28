@@ -18,15 +18,14 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 @Entity
 @Table(name = "calendar_events")
 public class CalendarEvent {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
-
     private String title;
     private String description;
     private String start;
-    @Column(name="end_time")
+    @Column(name = "end_time")
     private String end;
     private String location;
 
@@ -37,6 +36,28 @@ public class CalendarEvent {
     @Column(name = "people", columnDefinition = "jsonb")
     @Type(JsonBinaryType.class)
     private String[] people;
+
+    public CalendarEvent() {
+    }
+
+    public CalendarEvent(
+            UUID id,
+            String title,
+            String description,
+            String start,
+            String end,
+            String location,
+            CalendarType calendar,
+            String[] people) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.start = start;
+        this.end = end;
+        this.location = location;
+        this.calendar = calendar;
+        this.people = people;
+    }
 
     public UUID getId() {
         return id;

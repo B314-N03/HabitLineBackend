@@ -41,7 +41,6 @@ public class CalendarEventService {
         UUID id = event.getId();
         CalendarEvent existingEvent = calendarEventRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Calendar Event not found"));
-
         // Update fields as necessary
         if (event.getTitle() != null) {
             existingEvent.setTitle(event.getTitle());
@@ -58,20 +57,13 @@ public class CalendarEventService {
         if (event.getLocation() != null) {
             existingEvent.setLocation(event.getLocation());
         }
-        if (event.getCalendar() != null) {
-            UUID calendarId = event.getCalendar().getId();
-            CalendarType calendar = calendarTypeRepository.findById(calendarId)
-                .orElseThrow(() -> new RuntimeException("Calendar not found"));
-            existingEvent.setCalendar(calendar);
-        }
+
         if (event.getPeople() != null) {
             existingEvent.setPeople(event.getPeople());
         }
 
         return calendarEventRepository.save(existingEvent);
     }
-
-
 
     public CalendarEvent delete(UUID id) {
         CalendarEvent event = calendarEventRepository.findById(id)
